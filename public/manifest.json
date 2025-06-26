@@ -1,0 +1,16 @@
+{
+  "name": "Daily Tools Pro",
+  "short_name": "ToolsPro",
+  "description": "Daily Tools Pro - Essential Tool Hub",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
