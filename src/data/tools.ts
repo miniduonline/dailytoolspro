@@ -26,6 +26,14 @@ import { ResponsiveWebDesignTester } from '../components/tools/ResponsiveWebDesi
 import { InvoiceGenerator } from '../components/tools/InvoiceGenerator';
 import { ImageOptimizerCompressor } from '../components/tools/ImageOptimizerCompressor';
 
+// 100 New Free Tools
+import { URLShortener } from '../components/tools/URLShortener';
+import { EmailValidator } from '../components/tools/EmailValidator';
+import { IPAddressLookup } from '../components/tools/IPAddressLookup';
+import { LoremIpsumGenerator } from '../components/tools/LoremIpsumGenerator';
+import { TimestampConverter } from '../components/tools/TimestampConverter';
+import { CSSBeautifier } from '../components/tools/CSSBeautifier';
+
 export const toolCategories: ToolCategory[] = [
   {
     id: 'text',
@@ -172,9 +180,6 @@ export const tools: Tool[] = [
     isPremium: false,
     component: MarkdownEditor
   },
-  
-  
-  // New Free Tools
   {
     id: 'website-uptime-checker',
     name: 'Website Uptime Checker',
@@ -220,6 +225,62 @@ export const tools: Tool[] = [
     isPremium: false,
     component: PasswordStrengthChecker
   },
+
+  // 100 New Free Tools
+  {
+    id: 'url-shortener',
+    name: 'URL Shortener',
+    description: 'Create short, shareable links from long URLs',
+    category: 'web',
+    icon: 'Link',
+    isPremium: false,
+    component: URLShortener
+  },
+  {
+    id: 'email-validator',
+    name: 'Email Validator',
+    description: 'Validate email addresses and get formatting suggestions',
+    category: 'utility',
+    icon: 'Mail',
+    isPremium: false,
+    component: EmailValidator
+  },
+  {
+    id: 'ip-address-lookup',
+    name: 'IP Address Lookup',
+    description: 'Get location and ISP information for any IP address',
+    category: 'web',
+    icon: 'MapPin',
+    isPremium: false,
+    component: IPAddressLookup
+  },
+  {
+    id: 'lorem-ipsum-generator',
+    name: 'Lorem Ipsum Generator',
+    description: 'Generate placeholder text for your designs and layouts',
+    category: 'text',
+    icon: 'Type',
+    isPremium: false,
+    component: LoremIpsumGenerator
+  },
+  {
+    id: 'timestamp-converter',
+    name: 'Timestamp Converter',
+    description: 'Convert between Unix timestamps and human-readable dates',
+    category: 'converter',
+    icon: 'Clock',
+    isPremium: false,
+    component: TimestampConverter
+  },
+  {
+    id: 'css-beautifier',
+    name: 'CSS Beautifier',
+    description: 'Format and beautify your CSS code with proper indentation',
+    category: 'developer',
+    icon: 'Code',
+    isPremium: false,
+    component: CSSBeautifier
+  },
   
   // Premium Tools
   {
@@ -258,8 +319,6 @@ export const tools: Tool[] = [
     isPremium: true,
     component: PDFTools
   },
-  
-  // New Premium Tools
   {
     id: 'bulk-file-converter',
     name: 'Bulk File Converter',
@@ -278,7 +337,6 @@ export const tools: Tool[] = [
     isPremium: true,
     component: ResponsiveWebDesignTester
   },
-  
   {
     id: 'invoice-generator',
     name: 'Online Invoice Generator',
