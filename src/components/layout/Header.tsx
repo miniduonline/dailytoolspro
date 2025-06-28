@@ -144,18 +144,45 @@ export const Header: React.FC = () => {
     return String.fromCodePoint(...codePoints);
   };
 
-  const getInitials = (user: any) => {
-    if (user.displayName) {
-      return user.displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+  // Safe boolean checks
+  const isEmailVerified = Boolean(user?.emailVerified);
+  const accountType = user?.providerData?.[0]?.providerId === 'google.com' ? 'Google' : 'Email';
+
+  // Safe helper functions with proper null checks
+  const getInitials = (user: any): string => {
+    try {
+      if (user?.displayName && typeof user.displayName === 'string') {
+        const names = user.displayName.trim().split(' ').filter(n => n.length > 0);
+        return names.map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+      }
+      if (user?.email && typeof user.email === 'string') {
+        return user.email[0].toUpperCase();
+      }
+      return 'U';
+    } catch (error) {
+      console.error('Error getting initials:', error);
+      return 'U';
     }
-    if (user.email) {
-      return user.email[0].toUpperCase();
-    }
-    return 'U';
   };
 
-  const getDisplayName = (user: any) => {
-    return user.displayName || user.email?.split('@')[0] || 'User';
+  const getDisplayName = (user: any): string => {
+    try {
+      if (user?.displayName && typeof user.displayName === 'string' && user.displayName.trim()) {
+        return user.displayName.trim();
+      }
+      if (user?.email && typeof user.email === 'string') {
+        return user.email.split('@')[0];
+      }
+      return 'User';
+    } catch (error) {
+      console.error('Error getting display name:', error);
+      return 'User';
+    }
+  };
+
+  const getFirstName = (user: any): string => {
+    const fullName = getDisplayName(user);
+    return fullName.split(' ')[0];
   };
 
   return (
@@ -226,9 +253,9 @@ export const Header: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  {/* Country display for mobile */}
+                  {/* Country display for mobile - just flag */}
                   {userCountry && (
-                    <div className="md:hidden flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <div className="md:hidden text-sm">
                       <span>{getCountryFlag(userCountry)}</span>
                     </div>
                   )}
