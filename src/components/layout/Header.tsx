@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Wrench, Moon, Sun, User, LogOut, Coffee, Menu, X } from 'lucide-react';
+import { Wrench, Moon, Sun, User, LogOut, Coffee, Menu, X, MapPin } from 'lucide-react';
 import { AuthModal } from '../auth/AuthModal';
 
 export const Header: React.FC = () => {
@@ -10,6 +10,139 @@ export const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userCountry, setUserCountry] = useState<string>('');
+
+  // Get user's country based on their location
+  useEffect(() => {
+    const getUserCountry = async () => {
+      try {
+        // Try to get country from IP geolocation
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        
+        if (data.country_code) {
+          setUserCountry(data.country_code);
+        }
+      } catch (error) {
+        // Fallback: try to get from timezone
+        try {
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const countryFromTimezone = getCountryFromTimezone(timezone);
+          if (countryFromTimezone) {
+            setUserCountry(countryFromTimezone);
+          }
+        } catch (timezoneError) {
+          console.log('Could not determine user country');
+        }
+      }
+    };
+
+    getUserCountry();
+  }, []);
+
+  // Helper function to get country from timezone
+  const getCountryFromTimezone = (timezone: string): string => {
+    const timezoneToCountry: { [key: string]: string } = {
+      'America/New_York': 'US',
+      'America/Los_Angeles': 'US',
+      'America/Chicago': 'US',
+      'America/Denver': 'US',
+      'Europe/London': 'GB',
+      'Europe/Paris': 'FR',
+      'Europe/Berlin': 'DE',
+      'Europe/Rome': 'IT',
+      'Europe/Madrid': 'ES',
+      'Asia/Tokyo': 'JP',
+      'Asia/Shanghai': 'CN',
+      'Asia/Kolkata': 'IN',
+      'Asia/Dubai': 'AE',
+      'Australia/Sydney': 'AU',
+      'America/Toronto': 'CA',
+      'America/Sao_Paulo': 'BR',
+      'Europe/Moscow': 'RU',
+      'Asia/Seoul': 'KR',
+      'Europe/Amsterdam': 'NL',
+      'Europe/Stockholm': 'SE',
+      'Europe/Zurich': 'CH',
+      'Asia/Singapore': 'SG',
+      'Asia/Hong_Kong': 'HK',
+      'Pacific/Auckland': 'NZ',
+      'Africa/Cairo': 'EG',
+      'Africa/Johannesburg': 'ZA',
+      'America/Mexico_City': 'MX',
+      'America/Argentina/Buenos_Aires': 'AR',
+      'Europe/Istanbul': 'TR',
+      'Asia/Bangkok': 'TH',
+      'Asia/Jakarta': 'ID',
+      'Asia/Manila': 'PH',
+      'Europe/Warsaw': 'PL',
+      'Europe/Prague': 'CZ',
+      'Europe/Vienna': 'AT',
+      'Europe/Brussels': 'BE',
+      'Europe/Copenhagen': 'DK',
+      'Europe/Helsinki': 'FI',
+      'Europe/Oslo': 'NO',
+      'Europe/Dublin': 'IE',
+      'Europe/Lisbon': 'PT',
+      'Europe/Athens': 'GR',
+      'Europe/Budapest': 'HU',
+      'Europe/Bucharest': 'RO',
+      'Europe/Sofia': 'BG',
+      'Europe/Zagreb': 'HR',
+      'Asia/Karachi': 'PK',
+      'Asia/Dhaka': 'BD',
+      'Asia/Colombo': 'LK',
+      'Asia/Kathmandu': 'NP',
+      'Asia/Tashkent': 'UZ',
+      'Asia/Almaty': 'KZ',
+      'Asia/Baku': 'AZ',
+      'Asia/Yerevan': 'AM',
+      'Asia/Tbilisi': 'GE',
+      'Asia/Tehran': 'IR',
+      'Asia/Baghdad': 'IQ',
+      'Asia/Kuwait': 'KW',
+      'Asia/Riyadh': 'SA',
+      'Asia/Qatar': 'QA',
+      'Asia/Muscat': 'OM',
+      'Asia/Beirut': 'LB',
+      'Asia/Damascus': 'SY',
+      'Asia/Amman': 'JO',
+      'Asia/Jerusalem': 'IL',
+      'Africa/Lagos': 'NG',
+      'Africa/Nairobi': 'KE',
+      'Africa/Addis_Ababa': 'ET',
+      'Africa/Casablanca': 'MA',
+      'Africa/Tunis': 'TN',
+      'Africa/Algiers': 'DZ',
+      'America/Lima': 'PE',
+      'America/Bogota': 'CO',
+      'America/Caracas': 'VE',
+      'America/Santiago': 'CL',
+      'America/La_Paz': 'BO',
+      'America/Asuncion': 'PY',
+      'America/Montevideo': 'UY',
+      'America/Guatemala': 'GT',
+      'America/Costa_Rica': 'CR',
+      'America/Panama': 'PA',
+      'America/Havana': 'CU',
+      'America/Jamaica': 'JM',
+      'America/Port_of_Spain': 'TT'
+    };
+
+    return timezoneToCountry[timezone] || '';
+  };
+
+  // Get country flag emoji
+  const getCountryFlag = (countryCode: string): string => {
+    if (!countryCode || countryCode.length !== 2) return '';
+    
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    
+    return String.fromCodePoint(...codePoints);
+  };
 
   const getInitials = (user: any) => {
     if (user.displayName) {
@@ -79,9 +212,26 @@ export const Header: React.FC = () => {
                   <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium text-xs sm:text-sm">
                     {getInitials(user)}
                   </div>
-                  <span className="hidden md:inline text-gray-700 dark:text-gray-300 font-medium text-sm">
-                    {getDisplayName(user)}
-                  </span>
+                  <div className="hidden md:flex flex-col">
+                    <span className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-tight">
+                      {getDisplayName(user)}
+                    </span>
+                    {userCountry && (
+                      <div className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                        <MapPin className="h-3 w-3" />
+                        <span className="flex items-center space-x-1">
+                          <span>{getCountryFlag(userCountry)}</span>
+                          <span>{userCountry}</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Country display for mobile */}
+                  {userCountry && (
+                    <div className="md:hidden flex items-center text-xs text-gray-500 dark:text-gray-400">
+                      <span>{getCountryFlag(userCountry)}</span>
+                    </div>
+                  )}
                   <button
                     onClick={logout}
                     className="hidden sm:flex items-center space-x-1 px-2 sm:px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
@@ -98,13 +248,25 @@ export const Header: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
-                >
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign In</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  {/* Country display for non-logged users */}
+                  {userCountry && (
+                    <div className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">
+                      <MapPin className="h-3 w-3" />
+                      <span className="flex items-center space-x-1">
+                        <span>{getCountryFlag(userCountry)}</span>
+                        <span className="hidden sm:inline">{userCountry}</span>
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setShowAuthModal(true)}
+                    className="flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                  >
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sign In</span>
+                  </button>
+                </div>
               )}
               
               {/* Mobile menu button */}
@@ -158,6 +320,16 @@ export const Header: React.FC = () => {
                   <Coffee className="h-4 w-4" />
                   <span>Support Us</span>
                 </a>
+                {/* Mobile country display */}
+                {userCountry && (
+                  <div className="flex items-center space-x-2 py-2 text-gray-500 dark:text-gray-400 text-sm">
+                    <MapPin className="h-4 w-4" />
+                    <span className="flex items-center space-x-2">
+                      <span>{getCountryFlag(userCountry)}</span>
+                      <span>Browsing from {userCountry}</span>
+                    </span>
+                  </div>
+                )}
               </nav>
             </div>
           )}
