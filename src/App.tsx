@@ -13,6 +13,8 @@ import { Categories } from './components/pages/Categories';
 import { Dashboard } from './components/pages/Dashboard';
 import { ToolPage } from './components/pages/ToolPage';
 import { requestForToken, setupMessageListener } from './config/firebase';
+import { CustomToolPopup } from './components/ui/CustomToolPopup';
+import { useCustomToolPopup } from './hooks/useCustomToolPopup';
 
 // Component to debug routing
 function RouteDebugger() {
@@ -27,6 +29,8 @@ function RouteDebugger() {
 }
 
 function App() {
+  const { isPopupOpen, closePopup } = useCustomToolPopup();
+
   useEffect(() => {
     const initializeNotifications = async () => {
       try {
@@ -69,6 +73,9 @@ function App() {
               </Routes>
             </main>
             <Footer />
+            
+            {/* Custom Tool Development Popup */}
+            <CustomToolPopup isOpen={isPopupOpen} onClose={closePopup} />
           </div>
         </Router>
       </AuthProvider>
